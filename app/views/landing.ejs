@@ -7,8 +7,11 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
+
     <div class="container">
-        <h1>Delete DNS Record</h1>
+      <h1> <a href="https://aasystemsolution.com">A&A System Solution</a> </h1>
+
+        <h2>Delete DNS Record From Cloudflare</h2>
         <form id="deleteDNSForm">
             <div class="form-group">
                 <label for="apiToken">Cloudflare API Token</label>
@@ -22,6 +25,7 @@
         </form>
         <div id="responseMessage"></div>
         <div id="deletedRecords"></div>
+        <div id="loadingBar" class="loading-bar"></div>
     </div>
 
     <script>
@@ -29,6 +33,9 @@
             event.preventDefault();
             const apiToken = document.getElementById('apiToken').value;
             const zoneId = document.getElementById('zoneId').value;
+
+            const loadingBar = document.getElementById('loadingBar');
+            loadingBar.style.display = 'block';
 
             fetch('/delete-dns-records', {
                 method: 'POST',
@@ -39,6 +46,7 @@
             })
             .then(response => response.json())
             .then(data => {
+                loadingBar.style.display = 'none';
                 const responseMessage = document.getElementById('responseMessage');
                 const deletedRecords = document.getElementById('deletedRecords');
                 if (data.success) {
@@ -49,6 +57,7 @@
                 }
             })
             .catch(error => {
+                loadingBar.style.display = 'none';
                 const responseMessage = document.getElementById('responseMessage');
                 responseMessage.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
             });
