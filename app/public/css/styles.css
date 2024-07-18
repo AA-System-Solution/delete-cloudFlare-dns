@@ -58,3 +58,13 @@ button {
 button:hover {
     background-color: #218838;
 }
+
+#responseMessage {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#deletedRecords {
+    margin-top: 10px;
+    text-align: center;
+}

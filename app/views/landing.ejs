@@ -3,17 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A&A System -Solution</title>
-    <!-- https://aasystemsolution.com -->
+    <title>A&A System Solution</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
-
-
-
 <body>
     <div class="container">
         <h1>Delete DNS Record</h1>
-        <form id="deleteDNSForm" action="/delete" method="post">
+        <form id="deleteDNSForm">
             <div class="form-group">
                 <label for="apiToken">Cloudflare API Token</label>
                 <input type="text" id="apiToken" name="CLOUDFLARE_API_TOKEN" required>
@@ -24,6 +20,39 @@
             </div>
             <button type="submit">Submit</button>
         </form>
+        <div id="responseMessage"></div>
+        <div id="deletedRecords"></div>
     </div>
+
+    <script>
+        document.getElementById('deleteDNSForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const apiToken = document.getElementById('apiToken').value;
+            const zoneId = document.getElementById('zoneId').value;
+
+            fetch('/delete-dns-records', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ CLOUDFLARE_API_TOKEN: apiToken, ZONE_ID: zoneId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const responseMessage = document.getElementById('responseMessage');
+                const deletedRecords = document.getElementById('deletedRecords');
+                if (data.success) {
+                    responseMessage.innerHTML = `<p style="color: green;">All DNS records have been deleted.</p>`;
+                    deletedRecords.innerHTML = `<p style="color: green;">Deleted Records ID: ${data.deletedRecords.join(', ')}</p>`;
+                } else {
+                    responseMessage.innerHTML = `<p style="color: red;">${data.message}</p>`;
+                }
+            })
+            .catch(error => {
+                const responseMessage = document.getElementById('responseMessage');
+                responseMessage.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            });
+        });
+    </script>
 </body>
 </html>
